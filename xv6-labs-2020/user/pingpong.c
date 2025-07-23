@@ -29,6 +29,7 @@ int main(int argc, char * argv[]) {
     }
     // 子进程
     else if (pid == 0) {
+        sleep(3);
         const char* msg_to_parent = "pong";    
         char buffer[Buffer_size];
         close(ptoc[1]);
@@ -58,14 +59,14 @@ int main(int argc, char * argv[]) {
 
         write(ptoc[1], msg_to_child, my_strlen(msg_to_child) + 1);
         close(ptoc[1]);
-
+        int childPid = wait(0);
         int bytes_read = read(ctop[0], buffer, Buffer_size - 1);
         if (bytes_read > 0 && bytes_read < Buffer_size)
             buffer[bytes_read] = '\0';
         else
             buffer[0] = '\0';
 
-        printf("received message <%s> from child process:%d\n", buffer, wait(0));
+        printf("received message <%s> from child process:%d\n", buffer, childPid);
         close(ctop[0]);
 
         exit(0);
